@@ -1,0 +1,18 @@
+# 1️⃣ Crear carpeta única
+rm -rf Bachira-Bot && mkdir Bachira-Bot && cd Bachira-Bot
+# 2️⃣ Crear código completo
+cat > index.js <<'EOF'
+const {Client,LocalAuth,MessageMedia}=require('whatsapp-web.js');const axios=require('axios');
+const FOTO="https://i.pinimg.com/564x/d2/cb/1e/d2cb1e09d1367799008294c4d1814562.jpg";
+const API={GPT:"https://api.siputzx.my.id/api/ai/gpt4?text=",IMG:"https://api.siputzx.my.id/api/ai/dalle?prompt=",SRCH:"https://api.siputzx.my.id/api/ytsearch?q=",MP3:"https://api.siputzx.my.id/api/ytdl/mp3?url=",MP4:"https://api.siputzx.my.id/api/ytdl/mp4?url=",APK:"https://api.siputzx.my.id/api/apk/search?q="};
+const bot=new Client({authStrategy:new LocalAuth(),pairWithPhoneNumber:{phoneNumber:"549TU_NUMERO"},puppeteer:{headless:true,args:['--no-sandbox']}});
+bot.on('code',c=>console.log(`🔑 CODIGO: ${c}`));bot.on('ready',async()=>{console.log("✅ BACHIRA ACTIVO • Benjare 🇦🇷");try{await bot.setProfilePicture(await MessageMedia.fromUrl(FOTO))}catch{}});
+const MENU=`🟡 BACHIRA BOT ⚽\nHecho en Argentina 🇦🇷\n!ia • !imagen • !mp3 • !video • !apk • !sticker`;
+bot.on('message',async m=>{let t=m.body.toLowerCase().trim();if(['hola','menu','bachira'].includes(t))return m.reply(await MessageMedia.fromUrl(FOTO),{caption:MENU});if(t.startsWith('!ia '))try{m.reply(`🧠 ${(await axios.get(API.GPT+encodeURIComponent(t.slice(4)))).data.result}`)}catch{}if(t.startsWith('!imagen '))try{let r=await axios.get(API.IMG+encodeURIComponent(t.slice(8)),{responseType:'arraybuffer'});m.reply(Buffer.from(r.data),{caption:"✅ Listo"})}catch{}if(t.startsWith('!mp3 '))try{let v=(await axios.get(API.SRCH+encodeURIComponent(t.slice(5)))).data.result[0].videoId;let d=await axios.get(API.MP3+`https://youtu.be/${v}`,{responseType:'arraybuffer'});m.reply(Buffer.from(d.data),{mimetype:'audio/mpeg'})}catch{}if(t.startsWith('!apk '))try{m.reply(`✅ LINK: ${(await axios.get(API.APK+encodeURIComponent(t.slice(5)))).data.download}`)}catch{}if(t==='!sticker'&&m.hasMedia)m.reply(await m.downloadMedia(),{sendMediaAsSticker:true})});bot.initialize();
+EOF
+# 3️⃣ Poné tu número
+sed -i 's/549TU_NUMERO/5493871234567/g' index.js
+# 4️⃣ Instalar todo
+npm i whatsapp-web.js axios
+# 5️⃣ Iniciar el bot
+node index.js
